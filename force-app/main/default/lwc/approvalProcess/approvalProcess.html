@@ -1,0 +1,20 @@
+<template>
+    <lightning-tabset variant="scoped"  >
+        <lightning-tab label="Opportunity" value="Opportunity" onactive={handleTabChange}>
+            <div style="height: 300px;">
+                <lightning-datatable
+                    key-field="recordId"
+                    data={filteredApprovalListData}
+                    columns={opportunityColumns}
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </div>
+        </lightning-tab>
+        <lightning-tab label="Account" value="Account" onactive={handleTabChange}>
+            Account Approvals
+        </lightning-tab>
+        <lightning-tab label="Case" value="Case" onactive={handleTabChange}>
+            Case Approvals
+        </lightning-tab>
+    </lightning-tabset>
+</template>
