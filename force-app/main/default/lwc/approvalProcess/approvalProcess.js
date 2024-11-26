@@ -1,15 +1,20 @@
 import { LightningElement, wire, track } from 'lwc';
 import getApprovalPendingRecords from '@salesforce/apex/ApprovalProcess.getApprovalPendingRecords';
 import{ ShowToastEvent } from 'lightning/platformShowToastEvent';
-import{ NavigationMixin } from 'lightning/navigation';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class ApprovalProcess extends LightningElement {
+//define row actions
+const actions = [
+{ label: 'Show Details', name: 'view'},
+{ label: 'Delete', name: 'delete'}
+];
+export default class ApprovalProcess extends NavigationMixin(LightningElement) {
     @track approvalList = [];
     @track selectedTab = 'Opportunity';
-    actions = [
+   /* actions = [
         { label: 'Show Details', name: 'view' },
         { label: 'Edit', name: 'edit' }
-    ];
+    ]; */
     get opportunityColumns() {
         return [
             { label: 'Name', fieldName: 'opportunityName', type: 'text' },
@@ -20,8 +25,8 @@ export default class ApprovalProcess extends LightningElement {
             { label : 'actions',
                 type: 'action',
                 typeAttributes: {
-                    rowActions: this.actions,
-                    menuAlignment: 'right'
+                    rowActions: actions,
+                    menuAlignment: 'auto'
                 }
             }
         ]
@@ -56,30 +61,38 @@ export default class ApprovalProcess extends LightningElement {
     }
 
     handleRowAction(event) {
+        //const actionName = event.detail.action.name;
         const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        alert(row);
-        switch ( actionName ) {
-            case 'view':
+        console.log('Action Name => :', actionName);
+        //alert('Action Name => :', actionName);
+        const recordId = event.detail.row.recordId;
+        alert(recordId);
+        switch(actionName) {
+            case'view':
+                console.log('inside view case');
                 this[NavigationMixin.Navigate]({
-                    type: 'standard__recordPage',
+                    type: "standard__recordPage",
                     attributes: {
-                        recordId: row.recordId,
-                        actionName: 'view'
-                    }
-                });
+                        recordId: recordId,
+                        objectApiName: "Opportunity", // objectApiName is optional
+                        actionName: "view",
+                    },
+                    });
                 break;
-            case 'edit':
-                this[NavigationMixin.Navigate]({
+            case 'delete':
+                console.log('inside delete case');
+                /*this[NavigationMixin.Navigate]({
                     type: 'standard__recordPage',
                     attributes: {
-                        recordId: row.recordId,
-                        //objectApiName: 'Account',
+                        recordId: recordId,
+                        objectApiName: "Opportunity",
                         actionName: 'edit'
                     }
-                });
+                }); */
                 break;
             default:
+                alert('no action');
+                break;
         }
     }
 }
